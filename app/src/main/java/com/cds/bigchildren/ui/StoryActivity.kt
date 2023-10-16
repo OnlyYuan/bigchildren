@@ -64,7 +64,7 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
      }
 
     /**
-     * 播放视频
+     * 播放视频111
      */
     private fun play(urlString: String){
         player?.reset()
