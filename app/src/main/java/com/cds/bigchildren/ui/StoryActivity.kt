@@ -81,6 +81,7 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
         mBinding.loading.visibility = View.GONE
         isPrepared = true
         player?.seekTo(1)
+        player?.start()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -110,9 +111,9 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
                 this@StoryActivity.finish()
             }
 
-            storyPlayBtn->{//播放按钮
+            storyPlayBtn->{//播放按钮（改为自动播放）
                 if (isPrepared){
-                    player?.start()
+                //    player?.start()
                 }
             }
 
