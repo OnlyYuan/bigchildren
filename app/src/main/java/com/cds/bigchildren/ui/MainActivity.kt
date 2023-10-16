@@ -127,7 +127,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 generateQrcode(mobileIp)
             }
 
-            Toast.makeText(this,"ip:$mobileIp",Toast.LENGTH_SHORT).show()
+           // Toast.makeText(this,"ip:$mobileIp",Toast.LENGTH_SHORT).show()
             Log.i("11","ip: ${mobileIp}")
         }
 

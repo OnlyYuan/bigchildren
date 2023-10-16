@@ -168,6 +168,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 val intent = Intent(this@ReadActivity,QuestionActivity::class.java)
                 intent.putExtra("curContent",genduList)
                 startActivity(intent)
+                this@ReadActivity.finish()
             }
 
             readScore->{//得分

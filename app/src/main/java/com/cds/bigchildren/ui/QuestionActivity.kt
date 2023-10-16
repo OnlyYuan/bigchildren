@@ -1,17 +1,14 @@
 package com.cds.bigchildren.ui
 
+import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.databinding.DataBindingUtil
 import com.cds.bigchildren.R
 import com.cds.bigchildren.base.BaseActivity
 import com.cds.bigchildren.databinding.ActivityQuestionBinding
-import com.cds.bigchildren.databinding.ActivityStoryBinding
-import com.cds.bigchildren.model.bean.ConfigDataBean
-
-
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -44,7 +41,8 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
     private lateinit var currentNode: StartAnswerBean.NodeBean //当前节点
     private var audioPlayer: MediaPlayer?= null //音频播放
     private var curAnswerPosition= 0//当前回答位置
-
+    private var isFirstVoice = true //第一个音频是否读完
+    private var isSuccess = false //讀正確
 
     val mViewModel : QuestionViewModel by viewModel()
 
@@ -54,9 +52,14 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_question)
         EventBus.getDefault().register(this)
         totalAnswerScore = 0
+        initView()
         initRecycler()
         initAudio()
         startQuestionFun("Q&A")
+    }
+
+    private fun initView() {
+        mBinding.totalScore.text = totalAnswerScore.toString()
     }
 
     private fun initRecycler() {
@@ -75,7 +78,12 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         audioPlayer?.setOnPreparedListener(this)
         audioPlayer?.setOnCompletionListener {
             Log.i("11","-->音频完成")
-            EventBus.getDefault().post(readStartReadBtn)
+            if (isFirstVoice){//第一个voice，提示音
+                isFirstVoice = false
+                if (!(currentNode.voicePath.isNullOrEmpty())){
+                    playAudio(currentNode.voicePath.toString())
+                }
+            }
         }
     }
 
@@ -111,6 +119,9 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                 },
                 onSuccess = {
                     it?.let {it1->
+                        it1.current?.voicePath?.let { it2 ->
+                            playAudio(it2)
+                        }
                         startNextQuestion(it1.current?.nodeId?:"")
                     }
                 }
@@ -148,20 +159,28 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                             mBinding.questionTextView.text = currentNode.content?:""
                         }
                         if (!it1.current!!.voicePath.isNullOrEmpty()){
-                            playAudio(it1.current!!.voicePath.toString())
+                            if (!isFirstVoice){
+                                playAudio(it1.current!!.voicePath.toString())
+                            }
                         }
                     }
                     if (it != null) {
                         when(it.current?.userRespWay){
                             "none"->{ //回答正确的时候
-                                startNextQuestion(it.current?.nodeId?:"")
+                                isSuccess = true
+                                val myCountIme1 = WaitCounterTime(it.current?.nodeId?:"",2000L,1000L)
+                                myCountIme1.start()
                                 totalAnswerScore+=3
+                                mBinding.totalScore.text = totalAnswerScore.toString()
                             }
                             "end"->{//结束
                                 answerAdapter.setList(questionNodeList)
                                 mBinding.questionTextView.text = ""
                                 mBinding.tip.visibility = View.VISIBLE
-                                Toast.makeText(this@QuestionActivity,"答题结束", Toast.LENGTH_SHORT).show()
+
+                                val myCountIme = WaitCounterTime("",2000L,1000L)
+                                myCountIme.start()
+                               // Toast.makeText(this@QuestionActivity,"答题结束", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -200,5 +219,24 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
 
     }
 
+
+    inner class WaitCounterTime( var nodeId:String,var totalTime:Long,var countInterval:Long ):
+        CountDownTimer(totalTime,countInterval){
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+
+            if (isSuccess){//成功后，等2s播放下一個
+                startNextQuestion(nodeId)
+                isSuccess = false
+            }else{
+                startActivity(Intent(this@QuestionActivity,MainActivity::class.java))
+            }
+
+        }
+
+    }
 
 }

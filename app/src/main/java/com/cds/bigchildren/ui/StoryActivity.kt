@@ -29,7 +29,6 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
     private lateinit var mBinding: ActivityStoryBinding
     private var player: MediaPlayer?= null
     private var surfaceHolder: SurfaceHolder?= null
-    private var isPrepared = false //加载准备是否就绪
     private var curContent:ConfigDataBean.ContentData?=null //配置数据
 
 
@@ -79,8 +78,6 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
     override fun onPrepared(mp: MediaPlayer?) {
         mBinding.videoView.visibility = View.VISIBLE
         mBinding.loading.visibility = View.GONE
-        isPrepared = true
-        player?.seekTo(1)
         player?.start()
     }
 
@@ -112,9 +109,9 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
             }
 
             storyPlayBtn->{//播放按钮（改为自动播放）
-                if (isPrepared){
+                //if (isPrepared){
                 //    player?.start()
-                }
+               // }
             }
 
             storyNextBtn->{//下一项
