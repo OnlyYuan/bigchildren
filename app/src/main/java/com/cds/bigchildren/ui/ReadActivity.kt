@@ -6,7 +6,15 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.RotateAnimation
+import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
 import com.cds.bigchildren.R
 import com.cds.bigchildren.base.BaseActivity
 import com.cds.bigchildren.common.route.readBackeBtn
@@ -45,7 +53,24 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         initView()
         initVideo()
         initAudio()
+        initStarAnimation()
     }
+
+    private fun initStarAnimation() {
+        Glide.with(this)
+            .load(R.mipmap.star_move)
+            .into(mBinding.star1)
+
+        Glide.with(this)
+            .load(R.mipmap.star_move)
+            .into(mBinding.star2)
+
+        Glide.with(this)
+            .load(R.mipmap.star_move)
+            .into(mBinding.star3)
+
+    }
+
 
     private fun initData() {
         totalReadScore = 0
@@ -56,7 +81,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         curContent?.genDu?.let {
             genduList.addAll(it)
         }
-        mBinding.totalScore.text="0"
+        mBinding.totalScore.text=getString(R.string.star_num_string, totalReadScore.toString())
     }
 
     private fun initVideo() {
@@ -67,6 +92,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             genduList[curPosition].audio?.let {
                 playAudio(it)
             }
+            initStarAnimation()
         }
         //添加监听器
         surfaceHolder = mBinding.videoView.holder
@@ -118,11 +144,98 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
     }
 
 
+    /**
+     * 根据分数判断星星数
+     * @param score  1 2 3
+     */
+    private fun doStarAnimationFun(score:Int){
+        when(score){
+
+            1->{ //一颗星
+                mBinding.star1.visibility = View.VISIBLE
+                mBinding.star2.visibility = View.INVISIBLE
+                mBinding.star3.visibility = View.INVISIBLE
+                startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
+            }
+
+            2->{
+                mBinding.star1.visibility = View.VISIBLE
+                mBinding.star2.visibility = View.VISIBLE
+                mBinding.star3.visibility = View.INVISIBLE
+                startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
+                startAnimationFun(mBinding.star2.x,mBinding.star2.y,mBinding.star2)
+
+            }
+
+            3->{
+                mBinding.star1.visibility = View.VISIBLE
+                mBinding.star2.visibility = View.VISIBLE
+                mBinding.star3.visibility = View.VISIBLE
+                startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
+                startAnimationFun(mBinding.star2.x,mBinding.star2.y,mBinding.star2)
+                startAnimationFun(mBinding.star3.x,mBinding.star3.y,mBinding.star3)
+            }
+        }
+
+    }
+
+
+    /**
+     *
+     */
+
+    /**
+     * 星星动画
+     */
+    private fun startAnimationFun(imgX:Float,imgY:Float,view: View){
+        val animationSet = AnimationSet(true)
+        val rotateAnimation = RotateAnimation(0f,360f,
+            Animation.RELATIVE_TO_SELF,0.5f,
+            Animation.RELATIVE_TO_SELF,0.5f)
+        rotateAnimation.duration = 3000
+
+        //mBinding.gitImg.startAnimation(rotateAnimation)
+        val targetX = mBinding.bottomStarLayout.x + mBinding.totalStarImg.width/4
+        val targetY = mBinding.bottomStarLayout.y
+        Log.i("11","-->x $targetX  y $targetY")
+        Log.i("11","-->imgX $imgX  imgY $imgY")
+        val translateAnimation = TranslateAnimation(0f,targetX-imgX,0f,targetY-imgY   )
+        translateAnimation.duration = 3000
+
+        val scaleAnimation = ScaleAnimation(1.0f,0.3f,1.0f,0.3f)
+        scaleAnimation.duration  =3000
+
+        animationSet.addAnimation(rotateAnimation)
+        animationSet.addAnimation(scaleAnimation)
+        animationSet.addAnimation(translateAnimation)
+        view.startAnimation(animationSet)
+
+        animationSet.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.INVISIBLE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+
+        })
+    }
+
     override fun onPrepared(mp: MediaPlayer?) {
-        if (isVideoOrAudio)
+
+        if (isVideoOrAudio){
+            player?.seekTo(1)
+            mBinding.showStarView.visibility = View.GONE
             player?.start()
-        else
+        } else{
             audioPlayer?.start()
+        }
+
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -161,6 +274,9 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 curPosition++
                 if (curPosition<genduList.size){
                     play(genduList[curPosition].video?:"")
+                }else{
+                    mBinding.showStarView.visibility = View.VISIBLE
+                    mBinding.overTag.visibility = View.VISIBLE
                 }
             }
 
@@ -174,8 +290,10 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             readScore->{//得分
                 if (msgArray.size>1){
                     totalReadScore += msgArray[1].toInt()
+                    mBinding.showStarView.visibility = View.VISIBLE
+                    doStarAnimationFun(msgArray[1].toInt())
                 }
-                mBinding.totalScore.text = totalReadScore.toString()
+                mBinding.totalScore.text = getString(R.string.star_num_string, totalReadScore.toString())
             }
         }
     }

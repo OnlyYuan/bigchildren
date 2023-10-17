@@ -16,7 +16,30 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-             />
+            />
+
+        <LinearLayout
+            android:id="@+id/showStarView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/big_r_bg"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/overTag"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="恭喜完成所有跟读！"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/recordBtn"
@@ -31,6 +54,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
+            android:id="@+id/bottomStarLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -41,6 +65,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
+                android:id="@+id/totalStarImg"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@mipmap/star" />
@@ -56,6 +81,39 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/star1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/star_move"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/star2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/star2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/star_move"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/star_move"
+            app:layout_constraintStart_toEndOf="@+id/star2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
