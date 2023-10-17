@@ -10,42 +10,66 @@
 
         <TextView
             android:id="@+id/questionTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="100dp"
+            android:paddingEnd="100dp"
             android:text=""
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginStart="150dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/answerRecycle"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/answerRecycle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/questionTextView" />
 
-        <TextView
-            android:id="@+id/tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="答题结束！"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/tip"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="答题结束！"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="24sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <LinearLayout
+            android:id="@+id/showStarView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/question_bg"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="答题结束！"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/bottomStarLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -56,6 +80,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
+                android:id="@+id/totalStarImg"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@mipmap/star" />
@@ -71,6 +96,39 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/star1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/star_move"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/star2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/star2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/star_move"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/star_move"
+            app:layout_constraintStart_toEndOf="@+id/star2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
