@@ -273,6 +273,11 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                                 val myCountIme1 = WaitCounterTime(it.current?.nodeId?:"",2000L,1000L)
                                 myCountIme1.start()
                                 totalAnswerScore+=3
+                                if(it.current!!.content == "Well done!"){
+                                    mBinding.scoreImg.setImageResource(R.mipmap.well_done)
+                                }else{
+                                    mBinding.scoreImg.setImageResource(R.mipmap.good_job)
+                                }
                                 mBinding.showStarView.visibility = View.VISIBLE
                                 doStarAnimationFun(3)
                                 mBinding.totalScore.text = getString(R.string.star_num_string,totalAnswerScore.toString())
@@ -282,6 +287,9 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                                 mBinding.questionTextView.text = ""
                                 mBinding.tip.visibility = View.VISIBLE
                                 mBinding.showStarView.visibility = View.VISIBLE
+                                mBinding.bear.visibility = View.GONE
+                                mBinding.scoreImg.visibility = View.GONE
+
                                 totalAnswerScore+=3
                                 doStarAnimationFun(3)
                                 mBinding.totalScore.text = getString(R.string.star_num_string,totalAnswerScore.toString())

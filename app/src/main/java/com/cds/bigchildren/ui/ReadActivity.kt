@@ -20,6 +20,7 @@ import com.cds.bigchildren.base.BaseActivity
 import com.cds.bigchildren.common.route.readBackeBtn
 import com.cds.bigchildren.common.route.readGoAnswerBtn
 import com.cds.bigchildren.common.route.readNextVoiceBtn
+import com.cds.bigchildren.common.route.readRecordOkScore
 import com.cds.bigchildren.common.route.readScore
 import com.cds.bigchildren.common.route.readStartReadBtn
 import com.cds.bigchildren.databinding.ActivityReadBinding
@@ -44,6 +45,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
     private var isPrepared = false //加载准备是否就绪
     private var audioPlayer: MediaPlayer?= null //音频播放
     private var isVideoOrAudio = true // true表示 Video  false audio
+    private var isTypeVoice = 0  // 播放的声音类型 0.跟读提示音  1.重复提示音  2.评分时的提示音
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +91,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         player?.setOnPreparedListener(this)
         player?.setOnCompletionListener {
             Log.i("11","-->视频播放完成")
+            isTypeVoice = 0
             genduList[curPosition].audio?.let {
                 playAudio(it)
             }
@@ -109,7 +112,22 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         audioPlayer?.setOnPreparedListener(this)
         audioPlayer?.setOnCompletionListener {
             Log.i("11","-->音频完成")
-            EventBus.getDefault().post(readStartReadBtn)
+            when(isTypeVoice){
+                0->{//跟读提示音
+                    mBinding.recordBtn.setImageResource(R.mipmap.reconder_icon)
+                    EventBus.getDefault().post(readStartReadBtn)
+                }
+
+                1->{//错误 复读提示音
+                  //  playAudio("http://114.255.82.226:9311/video/wrong.mp3")
+                    replayVideo()
+                }
+
+                2->{//评分提示音
+                  //  playAudio("http://114.255.82.226:9311/video/goodjob.mp3")
+
+                }
+            }
         }
     }
 
@@ -149,6 +167,9 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
      * @param score  1 2 3
      */
     private fun doStarAnimationFun(score:Int){
+        //播放评分提示
+        isTypeVoice = 2
+        playAudio("http://114.255.82.226:9311/video/goodjob.mp3")
         when(score){
 
             1->{ //一颗星
@@ -270,6 +291,10 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 this@ReadActivity.finish()
             }
 
+            readRecordOkScore->{//录音结束
+                mBinding.recordBtn.setImageResource(R.mipmap.reconder_close_icon)
+            }
+
             readNextVoiceBtn->{//读下一段
                 curPosition++
                 if (curPosition<genduList.size){
@@ -289,12 +314,42 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
 
             readScore->{//得分
                 if (msgArray.size>1){
-                    totalReadScore += msgArray[1].toInt()
-                    mBinding.showStarView.visibility = View.VISIBLE
-                    doStarAnimationFun(msgArray[1].toInt())
+                    val mScore = msgArray[1].toInt()
+                    val mRePlay = msgArray[2].toInt()
+                    //显示图片
+                    if (mScore >1){
+                        totalReadScore += mScore
+                        doStarAnimationFun(mScore)
+                        mBinding.showStarView.visibility = View.VISIBLE
+                        mBinding.scoreImg.visibility = View.VISIBLE
+                    }else if(mRePlay==3){//得分为1
+                        totalReadScore += mScore
+                        doStarAnimationFun(mScore)
+                        mBinding.showStarView.visibility = View.VISIBLE
+                        mBinding.scoreImg.visibility = View.GONE
+                    }else{//重播
+                        //重播提示音
+                        isTypeVoice = 1
+                        playAudio("http://114.255.82.226:9311/video/wrong.mp3")
+                    }
+
                 }
                 mBinding.totalScore.text = getString(R.string.star_num_string, totalReadScore.toString())
             }
+        }
+    }
+
+
+    /**
+     * 重播
+     */
+    private fun replayVideo(){
+
+        if (curPosition<genduList.size){
+            play(genduList[curPosition].video?:"")
+        }else{
+            mBinding.showStarView.visibility = View.VISIBLE
+            mBinding.overTag.visibility = View.VISIBLE
         }
     }
 }

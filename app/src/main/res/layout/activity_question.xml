@@ -46,14 +46,16 @@
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/showStarView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@mipmap/question_bg"
             android:gravity="center"
             android:visibility="gone"
-            >
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/tip"
@@ -63,9 +65,36 @@
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+
+            <ImageView
+                android:id="@+id/bear"
+                android:layout_width="120dp"
+                android:layout_height="200dp"
+                android:src="@mipmap/like_bear"
+                android:scaleType="center"
+                android:layout_marginBottom="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/scoreImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/well_done"
+                android:layout_marginBottom="200dp"
+                android:layout_marginEnd="80dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/bear" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <LinearLayout

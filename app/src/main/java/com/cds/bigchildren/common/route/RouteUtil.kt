@@ -52,6 +52,10 @@ val readGoAnswerBtn = "ReadActivity/goAnswer"
 //5.得分
 val readScore = "ReadActivity/score"
 
+//6.录制完成
+val readRecordOkScore = "ReadActivity/recordOk"
+
+
 /**
  * QuestionActivity
  */
