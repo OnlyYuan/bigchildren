@@ -4,6 +4,7 @@ import android.app.Application
 import com.cds.bigchildren.util.di.appModule
 import com.cds.bigchildren.util.net.HttpConfig
 import com.cds.bigchildren.util.net.RetrofitUtils
+import com.pgyer.pgyersdk.PgyerSDKManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -26,6 +27,7 @@ class  MyApplication :Application() {
         }
 
         RetrofitUtils.getInstance().init(HttpConfig(baseUrl = BASE_URL))
-
+        //蒲公英bug检测
+        PgyerSDKManager.Init().setContext(this).start()
     }
 }

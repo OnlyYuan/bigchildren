@@ -61,6 +61,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="PGYER_API_KEY"
+            android:value="45b6213be741b838a966367931546a2b"/>
+        <meta-data
+            android:name="PGYER_FRONTJS_KEY"
+            android:value="f59fe3ed018624bcf3e424c645300b97"/>
     </application>
 
 </manifest>
