@@ -25,6 +25,7 @@ import com.cds.bigchildren.common.route.readScore
 import com.cds.bigchildren.common.route.readStartReadBtn
 import com.cds.bigchildren.databinding.ActivityReadBinding
 import com.cds.bigchildren.model.bean.ConfigDataBean
+import com.cds.bigchildren.util.totalCurrentLevel
 import com.cds.bigchildren.util.totalReadScore
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -306,6 +307,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             }
 
             readGoAnswerBtn->{//进入问答
+                totalCurrentLevel+=totalCurrentLevel
                 val intent = Intent(this@ReadActivity,QuestionActivity::class.java)
                 intent.putExtra("curContent",genduList)
                 startActivity(intent)

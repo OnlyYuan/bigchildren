@@ -16,6 +16,7 @@ import com.cds.bigchildren.common.route.storyNextBtn
 import com.cds.bigchildren.common.route.storyPlayBtn
 import com.cds.bigchildren.databinding.ActivityStoryBinding
 import com.cds.bigchildren.model.bean.ConfigDataBean
+import com.cds.bigchildren.util.totalCurrentLevel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -115,6 +116,7 @@ class StoryActivity : BaseActivity(), OnPreparedListener, SurfaceHolder.Callback
             }
 
             storyNextBtn->{//下一项
+                totalCurrentLevel = 1
                 val intent = Intent(this@StoryActivity,ReadActivity::class.java)
                 intent.putExtra("curContent",curContent)
                 startActivity(intent)

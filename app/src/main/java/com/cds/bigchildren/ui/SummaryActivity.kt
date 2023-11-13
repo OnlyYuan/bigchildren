@@ -10,6 +10,7 @@ import com.cds.bigchildren.common.route.summaryGoNext
 import com.cds.bigchildren.databinding.ActivitySummaryBinding
 import com.cds.bigchildren.model.bean.ConfigDataBean
 import com.cds.bigchildren.util.totalAnswerScore
+import com.cds.bigchildren.util.totalCurrentLevel
 import com.cds.bigchildren.util.totalGameScore
 import com.cds.bigchildren.util.totalReadScore
 import org.greenrobot.eventbus.EventBus
@@ -54,6 +55,7 @@ class SummaryActivity : BaseActivity() {
     fun onReceiveMsg(msg: String){
         when(msg){
             summaryGoNext->{//进入下一章
+                totalCurrentLevel = 0
                 val intent = Intent()
                 intent.putExtra("next",true)
                 this@SummaryActivity.setResult(101,intent)

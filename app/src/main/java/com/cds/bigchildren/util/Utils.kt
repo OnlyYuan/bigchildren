@@ -36,7 +36,8 @@ var totalAnswerScore = 0
  */
 var totalSessionId = "000"
 
-
+//当前关卡进度
+var totalCurrentLevel = 0
 /**
  * 分割图片的地址 eg  img:/profile/images/v2/cat.png
  */

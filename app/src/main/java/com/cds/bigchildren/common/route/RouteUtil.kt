@@ -4,6 +4,11 @@ package com.cds.bigchildren.common.route
 //接收信息
 
 /**
+ * 发送unity信息
+ */
+val unitySmallToBigString = "unity/smallToBig"
+
+/**
  * MainActivity
  */
 

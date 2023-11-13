@@ -56,8 +56,8 @@ class QrcodeDialog(
         val dm = resources.displayMetrics
         val params = win?.attributes
         params?.gravity = Gravity.CENTER
-        params?.width = 200.dp
-        params?.height = 200.dp
+        params?.width = 350.dp
+        params?.height = 300.dp
         win?.attributes= params
         dialog?.setCancelable(false)
         dialog?.setCanceledOnTouchOutside(false)

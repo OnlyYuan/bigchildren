@@ -11,7 +11,7 @@
 
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/bearGif"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:src="@mipmap/bear_main"
@@ -158,6 +158,18 @@
             android:src="@mipmap/forward"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/lightRing"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="4dp"
+            android:src="@mipmap/light_ring"
+            android:clickable="false"
+            android:focusable="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
