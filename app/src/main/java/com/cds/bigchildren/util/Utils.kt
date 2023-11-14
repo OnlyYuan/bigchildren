@@ -38,6 +38,9 @@ var totalSessionId = "000"
 
 //当前关卡进度
 var totalCurrentLevel = 0
+
+//图片音频基本路径
+val imgVoiceBasePath  = "https://ai.aidcstore.net/resource/"
 /**
  * 分割图片的地址 eg  img:/profile/images/v2/cat.png
  */

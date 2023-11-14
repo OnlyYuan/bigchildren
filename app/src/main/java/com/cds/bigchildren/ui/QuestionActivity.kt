@@ -25,6 +25,7 @@ import com.cds.bigchildren.common.route.questionSelectAnswer
 import com.cds.bigchildren.common.route.questiongoBack
 import com.cds.bigchildren.common.route.readStartReadBtn
 import com.cds.bigchildren.model.bean.StartAnswerBean
+import com.cds.bigchildren.util.imgVoiceBasePath
 import com.cds.bigchildren.util.net.DataHandler
 import com.cds.bigchildren.util.totalAnswerScore
 import com.cds.bigchildren.util.totalSessionId
@@ -103,8 +104,8 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
             Log.i("11","-->音频完成")
             if (isFirstVoice){//第一个voice，提示音
                 isFirstVoice = false
-                if (!(currentNode.voicePath.isNullOrEmpty())){
-                    playAudio(currentNode.voicePath.toString())
+                if (!(currentNode.content.isNullOrEmpty())){
+                    playAudio(getVoicePath(currentNode.content.toString()))
                 }
             }
         }
@@ -220,8 +221,8 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                 },
                 onSuccess = {
                     it?.let {it1->
-                        it1.current?.voicePath?.let { it2 ->
-                            playAudio(it2)
+                        it1.current?.content?.let { it2 ->
+                            playAudio(getVoicePath(it2))
                         }
                         startNextQuestion(it1.current?.nodeId?:"")
                     }
@@ -256,14 +257,14 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                         questionNodeList.clear()
                         it1.children?.let { it2 ->
                             questionNodeList.addAll(it2)
-                            mBinding.questionTextView.text = currentNode.content?:""
+                            mBinding.questionTextView.text = getTitleFun(currentNode.content?:"")
                         }
                         answerAdapter.setList(questionNodeList)
-                        if (!it1.current!!.voicePath.isNullOrEmpty()){
-                            if (!isFirstVoice){
-                                playAudio(it1.current!!.voicePath.toString())
-                            }
+                        getVoicePath(it1.current?.content.toString())
+                        if (!isFirstVoice){
+                            playAudio(getVoicePath(it1.current?.content.toString()))
                         }
+
                         mBinding.showStarView.visibility = View.GONE
                     }
                     if (it != null) {
@@ -303,6 +304,42 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
             )
         }
     }
+
+    /**
+     * 获取MP3路径
+     */
+    private fun getVoicePath(string:String?):String{
+
+        splitContent(string)?.let {
+            if(it.size>1){
+                Log.i("11","--->路径$imgVoiceBasePath${it[1]}")
+                return "$imgVoiceBasePath${it[1]}"
+            }
+        }
+
+        return ""
+    }
+
+
+    /**
+     * 获取问题名字
+     */
+    private fun getTitleFun(string:String?):String{
+        splitContent(string)?.let {
+            if(it.size>2){
+                return it[2]
+            }
+        }
+        return ""
+    }
+
+    /**
+     * 根据：截取
+     */
+    private fun splitContent(string:String?):List<String>?{
+        return string?.split(":")
+    }
+
 
     override fun onPrepared(mp: MediaPlayer?) {
         audioPlayer?.start()

@@ -9,7 +9,7 @@
         android:background="@mipmap/question_bg">
 
         <TextView
-            android:id="@+id/questionTextView"
+            android:id="@+id/questionTextView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="100dp"
@@ -27,24 +27,40 @@
             android:id="@+id/answerRecycle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bear1"
+            app:layout_constraintTop_toTopOf="parent"
+             />
+
+
+        <ImageView
+            android:id="@+id/bear1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="80dp"
+            android:src="@mipmap/bear_answer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/questionTextView" />
+            app:layout_constraintHorizontal_bias="0.3"
+            />
 
-<!--        <TextView-->
-<!--            android:id="@+id/tip"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="答题结束！"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="24sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+        <TextView
+            android:id="@+id/questionTextView"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="6dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="30dp"
+            android:layout_marginBottom="200dp"
+            android:layout_marginEnd="90dp"
+            android:background="@mipmap/answer_cloud"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/bear1" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/showStarView"
