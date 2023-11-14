@@ -3,6 +3,7 @@ package com.cds.bigchildren.ui
 
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
@@ -48,7 +49,9 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
     private var audioPlayer: MediaPlayer?= null //音频播放
     private var isVideoOrAudio = true // true表示 Video  false audio
     private var isTypeVoice = 0  // 播放的声音类型 0.跟读提示音  1.重复提示音  2.评分时的提示音 需要听自己的声音  3.不用听自己的录音
-
+    private var recordNetUrl = "" //本地录音上传后的网上地址
+    private var mScore = 0//當前分數
+    private var mRePlay = 0//重複次數
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding  = DataBindingUtil.setContentView(this, R.layout.activity_read)
@@ -86,6 +89,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             genduList.addAll(it)
         }
         mBinding.totalScore.text=getString(R.string.star_num_string, totalReadScore.toString())
+        //playAudio2()
     }
 
     private fun initVideo() {
@@ -116,6 +120,10 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             Log.i("11","-->音频完成")
             when(isTypeVoice){
                 0->{//跟读提示音
+                    mBinding.surfaceImageView.visibility = View.VISIBLE
+                    Glide.with(this)
+                        .load(genduList[curPosition].image)
+                        .into(mBinding.surfaceImageView)
                     mBinding.recordBtn.setImageResource(R.mipmap.reconder_icon)
                     EventBus.getDefault().post(readStartReadBtn)
                 }
@@ -127,15 +135,28 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 }
 
                 2->{//评分提示音,需要听自己的录音
+                    isTypeVoice= 5
+                    playAudio(recordNetUrl)
+                    Log.i("11","-->recordNetUrl${recordNetUrl}")
+                }
+
+                3->{//3次錯誤 不用听自己的录音，直接进入下一段
+                    isTypeVoice= 4
+                    //進入打分界面
+                    showStarView()
+
+                }
+
+                4->{//進入下一個跟讀
                     isTypeVoice= 0
                     EventBus.getDefault().post(readNextVoiceBtn)
                     goNextFun()
                 }
 
-                3->{//不用听自己的录音，直接进入下一段
-                    isTypeVoice= 0
-                    EventBus.getDefault().post(readNextVoiceBtn)
-                    goNextFun()
+                5->{//顯示打分界面
+
+                    //進入打分界面
+                    showStarView()
                 }
             }
         }
@@ -157,11 +178,13 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         }
     }
 
+
     /**
      * 播放视频
      */
     private fun play(urlString: String){
         isVideoOrAudio = true
+        mBinding.surfaceImageView.visibility = View.GONE
         player?.reset()
         try {
             player?.setDataSource(urlString)
@@ -173,10 +196,9 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
 
 
     /**
-     * 根据分数判断星星数
-     * @param score  1 2 3
+     * 最後一次讀
      */
-    private fun doStarAnimationFun(score:Int){
+    private fun lastAudioFun(score:Int){
         //播放评分提示
         var finalAudio = ""
         if (score==1){
@@ -187,6 +209,14 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             finalAudio = genduList[curPosition].audio_m3?:""
         }
         playAudio(finalAudio?:"")
+    }
+
+    /**
+     * 根据分数判断星星数
+     * @param score  1 2 3
+     */
+    private fun doStarAnimationFun(score:Int){
+        isTypeVoice = 4
         when(score){
 
             1->{ //一颗星
@@ -194,15 +224,17 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 mBinding.star2.visibility = View.INVISIBLE
                 mBinding.star3.visibility = View.INVISIBLE
                 startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
+                playAudio("https://ai.aidcstore.net/resource/goodjob.mp3")
             }
 
             2->{
                 mBinding.star1.visibility = View.VISIBLE
                 mBinding.star2.visibility = View.VISIBLE
                 mBinding.star3.visibility = View.INVISIBLE
+
                 startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
                 startAnimationFun(mBinding.star2.x,mBinding.star2.y,mBinding.star2)
-
+                playAudio("https://ai.aidcstore.net/resource/goodjob.mp3")
             }
 
             3->{
@@ -212,6 +244,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 startAnimationFun(mBinding.star1.x,mBinding.star1.y,mBinding.star1)
                 startAnimationFun(mBinding.star2.x,mBinding.star2.y,mBinding.star2)
                 startAnimationFun(mBinding.star3.x,mBinding.star3.y,mBinding.star3)
+                playAudio("https://ai.aidcstore.net/resource/welldone.mp3")
             }
         }
 
@@ -252,6 +285,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
 
             override fun onAnimationEnd(animation: Animation?) {
                 view.visibility = View.INVISIBLE
+                mBinding.totalScore.text = getString(R.string.star_num_string, totalReadScore.toString())
             }
 
             override fun onAnimationRepeat(animation: Animation?) {
@@ -348,19 +382,25 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
 
             readScore->{//得分
                 if (msgArray.size>1){
-                    val mScore = msgArray[1].toInt()
+                     mScore = msgArray[1].toInt()
                     val mRePlay = msgArray[2].toInt()
+
+                    if (msgArray.size>3){
+                        recordNetUrl = msgArray[3]
+                    }
                     //显示图片
                     if (mScore >1){ //只有2,3分直接过
                         totalReadScore += mScore
-                        doStarAnimationFun(mScore)
-                        mBinding.showStarView.visibility = View.VISIBLE
-                        mBinding.scoreImg.visibility = View.VISIBLE
+                        lastAudioFun(mScore)
+                       // doStarAnimationFun(mScore)
+//                        mBinding.showStarView.visibility = View.VISIBLE
+//                        mBinding.scoreImg.visibility = View.VISIBLE
                     }else if(mRePlay==3){//得分为1
                         totalReadScore += mScore
-                        doStarAnimationFun(mScore)
-                        mBinding.showStarView.visibility = View.VISIBLE
-                        mBinding.scoreImg.visibility = View.GONE
+                        lastAudioFun(mScore)
+                       // doStarAnimationFun(mScore)
+//                        mBinding.showStarView.visibility = View.VISIBLE
+//                        mBinding.scoreImg.visibility = View.GONE
                     }else{//重播
                         //重播提示音
                         isTypeVoice = 1
@@ -379,11 +419,33 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                     }
 
                 }
-                mBinding.totalScore.text = getString(R.string.star_num_string, totalReadScore.toString())
+
             }
         }
     }
 
+    /**
+     * 星星界面展示
+     */
+    private fun showStarView(){
+        when (mScore) {
+            2 -> { //只有2,3分直接过
+                mBinding.showStarView.visibility = View.VISIBLE
+                mBinding.scoreImg.visibility = View.VISIBLE
+                mBinding.scoreImg.setImageResource(R.mipmap.good_job)
+            }
+            3 -> {
+                mBinding.showStarView.visibility = View.VISIBLE
+                mBinding.scoreImg.visibility = View.VISIBLE
+                mBinding.scoreImg.setImageResource(R.mipmap.well_done)
+            }
+            else -> {//得分为1
+                mBinding.showStarView.visibility = View.VISIBLE
+                mBinding.scoreImg.visibility = View.GONE
+            }
+        }
+        doStarAnimationFun(mScore)
+    }
 
     /**
      * 重播

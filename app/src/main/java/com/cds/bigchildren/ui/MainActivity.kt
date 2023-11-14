@@ -91,6 +91,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             SharedPreferencesUtils.UserInfo,
             SharedPreferencesUtils.NICK_NAME,
             ""))?:""
+        Glide.with(this@MainActivity)
+            .load(R.mipmap.bear_wave)
+            .into(mBinding.bearGif)
     }
 
     override fun onClick(v: View?) {

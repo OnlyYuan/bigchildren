@@ -26,6 +26,7 @@ data class ConfigDataBean(
         var id:String?,
         var video:String?,//视频
         var audio:String?,//音频
+        var image:String?,//图片
         var audio_m3:String?,//3分内容
         var audio_m2:String?,//2分内容
         var audio_m1_1:String?,// 重读第一遍

@@ -20,6 +20,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.MySplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+
+
+        <activity
             android:name=".ui.SummaryActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
@@ -55,19 +70,19 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <meta-data
             android:name="PGYER_API_KEY"
-            android:value="45b6213be741b838a966367931546a2b"/>
+            android:value="45b6213be741b838a966367931546a2b" />
         <meta-data
             android:name="PGYER_FRONTJS_KEY"
-            android:value="f59fe3ed018624bcf3e424c645300b97"/>
+            android:value="f59fe3ed018624bcf3e424c645300b97" />
     </application>
 
 </manifest>
