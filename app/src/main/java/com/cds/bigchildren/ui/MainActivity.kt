@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.cds.bigchildren.R
 import com.cds.bigchildren.base.BaseActivity
 import com.cds.bigchildren.common.custom.QrcodeDialog
+import com.cds.bigchildren.common.custom.TransitionDialog
 import com.cds.bigchildren.common.route.mainToucSummaryBtn
 import com.cds.bigchildren.common.route.mainTouchAnswerBtn
 import com.cds.bigchildren.common.route.mainTouchGameBtn
@@ -185,6 +186,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    private var transitionDialog: TransitionDialog?= null //过渡页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onReceiveMsg(msg: String){
         var msgArray = msg.split("?")
@@ -204,23 +206,40 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             mainTouchStoryBtn->{//故事
                 totalCurrentLevel = 0
-                val intent  = Intent(this@MainActivity,StoryActivity::class.java)
-                intent.putExtra("curContent",contentDataList[curPosition])
-                startActivity(intent)
+
+                transitionDialog = TransitionDialog()
+                transitionDialog?.show(supportFragmentManager,"transitionDialog")
+                transitionDialog?.setGoNextFun {
+                    val intent  = Intent(this@MainActivity,StoryActivity::class.java)
+                    intent.putExtra("curContent",contentDataList[curPosition])
+                    startActivity(intent)
+                }
+
             }
 
             mainTouchReadBtn->{//读故事
                 totalCurrentLevel = 1
-                val  intent = Intent(this@MainActivity,ReadActivity::class.java)
-                intent.putExtra("curContent",contentDataList[curPosition])
-                startActivity(intent)
+
+                transitionDialog = TransitionDialog()
+                transitionDialog?.show(supportFragmentManager,"transitionDialog")
+                transitionDialog?.setGoNextFun {
+                    val  intent = Intent(this@MainActivity,ReadActivity::class.java)
+                    intent.putExtra("curContent",contentDataList[curPosition])
+                    startActivity(intent)
+                }
             }
 
             mainTouchAnswerBtn->{//问答
                 totalCurrentLevel = 2
-                val intent = Intent(this@MainActivity,QuestionActivity::class.java)
-                intent.putExtra("curContent",contentDataList[curPosition])
-                startActivity(intent)
+
+                transitionDialog = TransitionDialog()
+                transitionDialog?.show(supportFragmentManager,"transitionDialog")
+                transitionDialog?.setGoNextFun {
+                    val intent = Intent(this@MainActivity,QuestionActivity::class.java)
+                    intent.putExtra("curContent",contentDataList[curPosition])
+                    startActivity(intent)
+                }
+
             }
 
             mainTouchGameBtn->{//游戏
@@ -229,9 +248,15 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             mainToucSummaryBtn->{//总结页面
                 totalCurrentLevel = 4
-                val intent = Intent(this@MainActivity,SummaryActivity::class.java)
-                intent.putExtra("curContent",contentDataList[curPosition])
-                summaryLauncher.launch(intent)
+
+                transitionDialog = TransitionDialog()
+                transitionDialog?.show(supportFragmentManager,"transitionDialog")
+                transitionDialog?.setGoNextFun {
+                    val intent = Intent(this@MainActivity,SummaryActivity::class.java)
+                    intent.putExtra("curContent",contentDataList[curPosition])
+                    summaryLauncher.launch(intent)
+                }
+
             }
         }
     }
