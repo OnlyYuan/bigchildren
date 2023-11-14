@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.cds.bigchildren.R
 import com.cds.bigchildren.base.BaseActivity
+import com.cds.bigchildren.common.custom.TransitionDialog
 import com.cds.bigchildren.common.route.readBackeBtn
 import com.cds.bigchildren.common.route.readGoAnswerBtn
 import com.cds.bigchildren.common.route.readNextVoiceBtn
@@ -46,7 +47,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
     private var isPrepared = false //加载准备是否就绪
     private var audioPlayer: MediaPlayer?= null //音频播放
     private var isVideoOrAudio = true // true表示 Video  false audio
-    private var isTypeVoice = 0  // 播放的声音类型 0.跟读提示音  1.重复提示音  2.评分时的提示音
+    private var isTypeVoice = 0  // 播放的声音类型 0.跟读提示音  1.重复提示音  2.评分时的提示音 需要听自己的声音  3.不用听自己的录音
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,13 +121,21 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 }
 
                 1->{//错误 复读提示音
-                  //  playAudio("http://114.255.82.226:9311/video/wrong.mp3")
-                    replayVideo()
+                   // replayVideo()
+                    mBinding.recordBtn.setImageResource(R.mipmap.reconder_icon)
+                    EventBus.getDefault().post(readStartReadBtn)
                 }
 
-                2->{//评分提示音
-                  //  playAudio("http://114.255.82.226:9311/video/goodjob.mp3")
+                2->{//评分提示音,需要听自己的录音
+                    isTypeVoice= 0
+                    EventBus.getDefault().post(readNextVoiceBtn)
+                    goNextFun()
+                }
 
+                3->{//不用听自己的录音，直接进入下一段
+                    isTypeVoice= 0
+                    EventBus.getDefault().post(readNextVoiceBtn)
+                    goNextFun()
                 }
             }
         }
@@ -169,8 +178,15 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
      */
     private fun doStarAnimationFun(score:Int){
         //播放评分提示
-        isTypeVoice = 2
-        playAudio("http://114.255.82.226:9311/video/goodjob.mp3")
+        var finalAudio = ""
+        if (score==1){
+            isTypeVoice = 3
+            finalAudio = genduList[curPosition].audio_m1_3?:""
+        }else{
+            isTypeVoice = 2
+            finalAudio = genduList[curPosition].audio_m3?:""
+        }
+        playAudio(finalAudio?:"")
         when(score){
 
             1->{ //一颗星
@@ -202,9 +218,6 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
     }
 
 
-    /**
-     *
-     */
 
     /**
      * 星星动画
@@ -284,6 +297,19 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         EventBus.getDefault().unregister(this)
     }
 
+    /**
+     * 读下一段
+     */
+    private fun goNextFun(){
+        curPosition++
+        if (curPosition<genduList.size){
+            play(genduList[curPosition].video?:"")
+        }else{
+            mBinding.showStarView.visibility = View.VISIBLE
+            mBinding.overTag.visibility = View.VISIBLE
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onReceiveMsg(msg: String){
         var msgArray = msg.split("?")
@@ -296,22 +322,28 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                 mBinding.recordBtn.setImageResource(R.mipmap.reconder_close_icon)
             }
 
-            readNextVoiceBtn->{//读下一段
-                curPosition++
-                if (curPosition<genduList.size){
-                    play(genduList[curPosition].video?:"")
-                }else{
-                    mBinding.showStarView.visibility = View.VISIBLE
-                    mBinding.overTag.visibility = View.VISIBLE
-                }
-            }
+//            readNextVoiceBtn->{//读下一段
+//                curPosition++
+//                if (curPosition<genduList.size){
+//                    play(genduList[curPosition].video?:"")
+//                }else{
+//                    mBinding.showStarView.visibility = View.VISIBLE
+//                    mBinding.overTag.visibility = View.VISIBLE
+//                }
+//            }
 
             readGoAnswerBtn->{//进入问答
                 totalCurrentLevel+=totalCurrentLevel
-                val intent = Intent(this@ReadActivity,QuestionActivity::class.java)
-                intent.putExtra("curContent",genduList)
-                startActivity(intent)
-                this@ReadActivity.finish()
+
+                val transitionDialog = TransitionDialog()
+                transitionDialog.show(supportFragmentManager,"transitionDialog")
+                transitionDialog.setGoNextFun {
+                    val intent = Intent(this@ReadActivity,QuestionActivity::class.java)
+                    intent.putExtra("curContent",genduList)
+                    startActivity(intent)
+                    this@ReadActivity.finish()
+                }
+
             }
 
             readScore->{//得分
@@ -319,7 +351,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                     val mScore = msgArray[1].toInt()
                     val mRePlay = msgArray[2].toInt()
                     //显示图片
-                    if (mScore >1){
+                    if (mScore >1){ //只有2,3分直接过
                         totalReadScore += mScore
                         doStarAnimationFun(mScore)
                         mBinding.showStarView.visibility = View.VISIBLE
@@ -332,7 +364,18 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
                     }else{//重播
                         //重播提示音
                         isTypeVoice = 1
-                        playAudio("http://114.255.82.226:9311/video/wrong.mp3")
+                        val audioPath  = when (mRePlay) {
+                            1 -> {
+                                genduList[curPosition].audio_m1_1
+                            }
+                            2 -> {
+                                genduList[curPosition].audio_m1_2
+                            }
+                            else -> {
+                                genduList[curPosition].audio_m1_3
+                            }
+                        }
+                        playAudio(audioPath?:"")
                     }
 
                 }

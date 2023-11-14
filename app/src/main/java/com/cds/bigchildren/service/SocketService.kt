@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.cds.bigchildren.common.route.readNextVoiceBtn
 import com.cds.bigchildren.common.route.readStartReadBtn
 import com.cds.bigchildren.util.MyServerSocket
 import com.cds.bigchildren.util.socketList
@@ -43,7 +44,7 @@ class SocketService : Service() {
      */
     private fun startServiceSocket(){
 
-         myServerSocket = MyServerSocket(8080,this)
+        myServerSocket = MyServerSocket(8080,this)
         myServerSocket.start()
     }
 
@@ -60,7 +61,13 @@ class SocketService : Service() {
             readStartReadBtn->{//开始跟读
                 sendMessageToClient(readStartReadBtn)
             }
+            readNextVoiceBtn->{//跟读下一个
+               sendMessageToClient(readNextVoiceBtn)
+            }
 
+            else->{
+
+            }
         }
     }
 
@@ -70,6 +77,7 @@ class SocketService : Service() {
     private fun sendMessageToClient(msg: String){
 
         mThreadPool.execute {
+            Log.i("11","-->发送准备socketList的大小${socketList.size}")
             for (mSocket in socketList){
                 val mOutStream = mSocket.getOutputStream()
                 val bufferedWriter = BufferedWriter(OutputStreamWriter(mOutStream))
