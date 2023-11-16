@@ -92,6 +92,15 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         //playAudio2()
     }
 
+    /**
+     * 加載成功熊gif
+     */
+    private fun showSuccessBearGif(){
+        Glide.with(this)
+            .load(R.mipmap.bear_jump)
+            .into(mBinding.bear)
+    }
+
     private fun initVideo() {
         player = MediaPlayer()
         player?.setOnPreparedListener(this)
@@ -300,6 +309,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         if (isVideoOrAudio){
             player?.seekTo(1)
             mBinding.showStarView.visibility = View.GONE
+
             player?.start()
         } else{
             audioPlayer?.start()
@@ -340,6 +350,7 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
             play(genduList[curPosition].video?:"")
         }else{
             mBinding.showStarView.visibility = View.VISIBLE
+            showSuccessBearGif()
             mBinding.overTag.visibility = View.VISIBLE
         }
     }
@@ -431,11 +442,13 @@ class ReadActivity : BaseActivity(), MediaPlayer.OnPreparedListener, SurfaceHold
         when (mScore) {
             2 -> { //只有2,3分直接过
                 mBinding.showStarView.visibility = View.VISIBLE
+                showSuccessBearGif()
                 mBinding.scoreImg.visibility = View.VISIBLE
                 mBinding.scoreImg.setImageResource(R.mipmap.good_job)
             }
             3 -> {
                 mBinding.showStarView.visibility = View.VISIBLE
+                showSuccessBearGif()
                 mBinding.scoreImg.visibility = View.VISIBLE
                 mBinding.scoreImg.setImageResource(R.mipmap.well_done)
             }

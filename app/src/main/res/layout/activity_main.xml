@@ -12,8 +12,8 @@
 
         <ImageView
             android:id="@+id/bearGif"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:src="@mipmap/bear_main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

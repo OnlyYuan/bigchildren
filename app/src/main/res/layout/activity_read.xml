@@ -59,10 +59,9 @@
 
             <ImageView
                 android:id="@+id/bear"
-                android:layout_width="120dp"
-                android:layout_height="200dp"
-                android:src="@mipmap/like_bear"
-                android:scaleType="center"
+                android:layout_width="400dp"
+                android:layout_height="350dp"
+                android:src="@mipmap/bear_jump"
                 android:layout_marginBottom="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -73,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/good_job"
-                android:layout_marginBottom="200dp"
-                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="240dp"
+                android:layout_marginEnd="250dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/bear" />
 

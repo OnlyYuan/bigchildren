@@ -50,6 +50,10 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
     private var curAnswerPosition= 0//当前回答位置
     private var isFirstVoice = true //第一个音频是否读完
     private var isSuccess = false //讀正確
+    private var answerCounterTime :AnswerCounterTime?= null //切换gif状态倒计时
+    private var myCountIme:WaitCounterTime?=null  //完成后定时跳转
+    private var myCountIme1:WaitCounterTime?=null  //答对后的等待
+
 
     val mViewModel : QuestionViewModel by viewModel()
 
@@ -69,6 +73,16 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
     private fun initView() {
 
         mBinding.totalScore.text = getString(R.string.star_num_string,totalAnswerScore.toString())
+        changeGif(false)
+
+    }
+
+    private fun showJumpGif(){
+        mBinding.bear.visibility = View.VISIBLE
+        Glide.with(this@QuestionActivity)
+            .load(R.mipmap.bear_jump)
+            .into(mBinding.bear)
+
     }
 
     private fun initStarAnimation() {
@@ -92,6 +106,23 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         mBinding.answerRecycle.layoutManager = layoutManager
         mBinding.answerRecycle.adapter = answerAdapter
     }
+
+    /**
+     * 修改gif图片
+     */
+    private fun changeGif( isOverTime:Boolean){
+     if (isOverTime){
+         Glide.with(this@QuestionActivity)
+             .load(R.mipmap.bear_overtime)
+             .into(mBinding.bear1)
+     }else{
+         Glide.with(this@QuestionActivity)
+             .load(R.mipmap.bear_wave)
+             .into(mBinding.bear1)
+     }
+
+    }
+
 
     /**
      * 答题提示播放
@@ -264,15 +295,15 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                         if (!isFirstVoice){
                             playAudio(getVoicePath(it1.current?.content.toString()))
                         }
-
+                        startOverTimeFun()
                         mBinding.showStarView.visibility = View.GONE
                     }
                     if (it != null) {
                         when(it.current?.userRespWay){
                             "none"->{ //回答正确的时候
                                 isSuccess = true
-                                val myCountIme1 = WaitCounterTime(it.current?.nodeId?:"",2000L,1000L)
-                                myCountIme1.start()
+                                myCountIme1 = WaitCounterTime(it.current?.nodeId?:"",5000L,1000L)
+                                myCountIme1?.start()
                                 totalAnswerScore+=3
                                 if(it.current!!.content == "Well done!"){
                                     mBinding.scoreImg.setImageResource(R.mipmap.well_done)
@@ -280,6 +311,7 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                                     mBinding.scoreImg.setImageResource(R.mipmap.good_job)
                                 }
                                 mBinding.showStarView.visibility = View.VISIBLE
+                                showJumpGif()
                                 doStarAnimationFun(3)
                                 mBinding.totalScore.text = getString(R.string.star_num_string,totalAnswerScore.toString())
                             }
@@ -288,14 +320,15 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
                                 mBinding.questionTextView.text = ""
                                 mBinding.tip.visibility = View.VISIBLE
                                 mBinding.showStarView.visibility = View.VISIBLE
+                                showJumpGif()
                                 mBinding.bear.visibility = View.GONE
                                 mBinding.scoreImg.visibility = View.GONE
 
                                 totalAnswerScore+=3
                                 doStarAnimationFun(3)
                                 mBinding.totalScore.text = getString(R.string.star_num_string,totalAnswerScore.toString())
-                                val myCountIme = WaitCounterTime("",5000L,1000L)
-                                myCountIme.start()
+                                myCountIme = WaitCounterTime("",7000L,1000L)
+                                myCountIme?.start()
                                // Toast.makeText(this@QuestionActivity,"答题结束", Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -349,6 +382,13 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         super.onDestroy()
         audioPlayer?.reset()
         audioPlayer?.release()
+        isCountDownTimerRunning = true
+        answerCounterTime?.cancel()
+        answerCounterTime = null
+        myCountIme?.cancel()
+        myCountIme = null
+        myCountIme1?.cancel()
+        myCountIme1 = null
         EventBus.getDefault().unregister(this)
     }
 
@@ -357,6 +397,8 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         val datas = msg.split("?")
         when(datas[0]){
             questionSelectAnswer->{//选择答案的回传
+                isCountDownTimerRunning = true
+                changeGif(false)
                 if (datas.size>1){
                     curAnswerPosition = (datas[1]?:"0").toInt()
                     startNextQuestion(currentNode.nodeId?:"",questionNodeList[curAnswerPosition].nodeId)
@@ -370,6 +412,17 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
         }
 
     }
+
+    /**
+     * 开始倒计时 用于显示动图模式
+     */
+    private fun startOverTimeFun(){
+        isCountDownTimerRunning = false
+        overTimeCount= 0
+        answerCounterTime = AnswerCounterTime(18000L,500L)
+        answerCounterTime?.start()
+    }
+
 
 
     inner class WaitCounterTime( var nodeId:String,var totalTime:Long,var countInterval:Long ):
@@ -388,7 +441,29 @@ class QuestionActivity : BaseActivity(), MediaPlayer.OnPreparedListener {
             }
 
         }
+    }
 
+    private var isCountDownTimerRunning = false //终止计数
+    private var overTimeCount = 0L
+    /**
+     * 用于答题超过15s，显示瞌睡gif
+     */
+    inner class AnswerCounterTime( var totalTime:Long,var countInterval:Long ):
+        CountDownTimer(totalTime,countInterval){
+        override fun onTick(millisUntilFinished: Long) {
+            if(isCountDownTimerRunning){
+                cancel()
+            }
+            overTimeCount += countInterval
+            if (overTimeCount >= 15000L && !isCountDownTimerRunning){//大于15s
+                changeGif(true)
+            }
+
+        }
+
+        override fun onFinish() {
+
+        }
     }
 
 }

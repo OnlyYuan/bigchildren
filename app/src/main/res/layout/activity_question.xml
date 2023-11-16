@@ -36,10 +36,9 @@
 
         <ImageView
             android:id="@+id/bear1"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="80dp"
-            android:src="@mipmap/bear_answer"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@mipmap/bear_wave"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +55,8 @@
             android:paddingHorizontal="6dp"
             android:paddingTop="10dp"
             android:paddingBottom="30dp"
-            android:layout_marginBottom="200dp"
-            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="220dp"
+            android:layout_marginEnd="190dp"
             android:background="@mipmap/answer_cloud"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/bear1" />
@@ -90,10 +89,9 @@
 
             <ImageView
                 android:id="@+id/bear"
-                android:layout_width="120dp"
-                android:layout_height="200dp"
-                android:src="@mipmap/like_bear"
-                android:scaleType="center"
+                android:layout_width="400dp"
+                android:layout_height="350dp"
+                android:src="@mipmap/bear_play"
                 android:layout_marginBottom="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -103,9 +101,9 @@
                 android:id="@+id/scoreImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/well_done"
-                android:layout_marginBottom="200dp"
-                android:layout_marginEnd="80dp"
+                android:src="@mipmap/good_job"
+                android:layout_marginBottom="240dp"
+                android:layout_marginEnd="250dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/bear" />
 
