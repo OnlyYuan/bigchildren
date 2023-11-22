@@ -27,39 +27,42 @@
             android:id="@+id/answerRecycle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="220dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bear1"
+            app:layout_constraintStart_toStartOf="@+id/bear1"
             app:layout_constraintTop_toTopOf="parent"
              />
 
 
         <ImageView
             android:id="@+id/bear1"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
             android:src="@mipmap/bear_wave"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintHorizontal_bias="0.2"
             />
 
         <TextView
             android:id="@+id/questionTextView"
-            android:layout_width="150dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:background="@mipmap/answer_cloud"
             android:gravity="center"
+            android:layout_marginEnd="50dp"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="6dp"
+            android:text=""
+            android:paddingBottom="6dp"
+            android:layout_marginBottom="240dp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:paddingHorizontal="6dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="30dp"
-            android:layout_marginBottom="220dp"
-            android:layout_marginEnd="190dp"
-            android:background="@mipmap/answer_cloud"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/bear1" />
+            app:layout_constraintEnd_toEndOf="@+id/bear1"
+
+           />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/showStarView"

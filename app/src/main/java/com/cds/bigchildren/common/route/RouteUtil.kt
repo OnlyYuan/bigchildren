@@ -79,3 +79,9 @@ val summaryGoNext = "SummaryActivity/goNext"
 
 //2.关闭
 val summaryClose = "SummaryActivity/close"
+
+///**
+// * game
+// */
+////1.数据传输
+//val gameData = "MyUnityActivity/gameData"

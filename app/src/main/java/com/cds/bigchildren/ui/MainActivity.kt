@@ -36,6 +36,7 @@ import com.cds.bigchildren.util.net.DataHandler
 import com.cds.bigchildren.util.totalCurrentLevel
 import com.cds.bigchildren.util.totalSessionId
 import com.cds.bigchildren.viewmodel.MainViewModel
+import com.unity3d.player.UnityPlayerActivity
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -84,6 +85,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         mBinding.storyBtn.setOnClickListener(this)
         mBinding.redBtn.setOnClickListener(this)
         mBinding.answerBtn.setOnClickListener(this)
+        mBinding.gameBtn.setOnClickListener(this)
     }
 
     private fun initView() {
@@ -114,6 +116,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 val intent = Intent(this@MainActivity,QuestionActivity::class.java)
                 intent.putExtra("curContent",contentDataList[curPosition])
                 startActivity(intent)
+            }
+
+            mBinding.gameBtn->{
+
+                startActivity(Intent(this@MainActivity,UnityPlayerActivity::class.java))
             }
         }
     }
@@ -247,6 +254,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             mainTouchGameBtn->{//游戏
                 totalCurrentLevel = 3
+                startActivity(Intent(this@MainActivity,MyUnityActivity::class.java))
             }
 
             mainToucSummaryBtn->{//总结页面
