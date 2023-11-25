@@ -78,7 +78,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        showDongtu()
+      //  showDongtu()
     }
 
     private fun initListener() {
@@ -96,6 +96,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         Glide.with(this@MainActivity)
             .load(R.mipmap.bear_wave)
             .into(mBinding.bearGif)
+
+
+        Glide.with(this@MainActivity)
+            .load(R.mipmap.donghua)
+            .into(mBinding.sumBtn)
+
+
+        bigSmallAnimationFun(mBinding.sumBtn)
     }
 
     override fun onClick(v: View?) {
@@ -363,7 +371,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      * view 放大缩小动画
      */
     private fun bigSmallAnimationFun(view:View){
-        val scaleAnimation = ScaleAnimation(1.0f,1.1f,1.0f,1.1f,
+        val scaleAnimation = ScaleAnimation(1.4f,1.7f,1.4f,1.7f,
             Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF,0.5f)
         scaleAnimation.duration  =300
         scaleAnimation.repeatCount = ScaleAnimation.INFINITE

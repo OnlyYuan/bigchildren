@@ -9,6 +9,11 @@ package com.cds.bigchildren.common.route
 val unitySmallToBigString = "unity/smallToBig"
 
 /**
+ * 关闭unity模块
+ */
+val finishUnity =  "unity/finishUnityPlayer"
+
+/**
  * MainActivity
  */
 
